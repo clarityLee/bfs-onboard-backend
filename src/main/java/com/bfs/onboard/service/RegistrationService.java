@@ -1,9 +1,9 @@
 package com.bfs.onboard.service;
 
 import com.bfs.onboard.dao.RegistrationTokenDao;
+import com.bfs.onboard.dao.RoleDao;
 import com.bfs.onboard.dao.UserDao;
 import com.bfs.onboard.dao.UserRoleDao;
-import com.bfs.onboard.dao.impl.RoleDao;
 import com.bfs.onboard.domain.RegistrationToken;
 import com.bfs.onboard.domain.Role;
 import com.bfs.onboard.domain.User;
@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
+import static com.bfs.onboard.constant.Constant.REGISTRATION_TOKEN_VALID_DURATION_Days;
+
 @Service
 public class RegistrationService {
 
-    private final static int TOKEN_VALID_DURATION_DAYS = 2;
 
     private TokenGenerator tokenGenerator;
     private MailService mailService;
@@ -71,7 +72,7 @@ public class RegistrationService {
         String token = tokenGenerator.registration();
         RegistrationToken rgsToken = new RegistrationToken();
         rgsToken.setToken(token);
-        rgsToken.setValidDuration(LocalDateTime.now().plusDays(TOKEN_VALID_DURATION_DAYS));
+        rgsToken.setValidDuration(LocalDateTime.now().plusDays(REGISTRATION_TOKEN_VALID_DURATION_Days));
         rgsToken.setEmail(email);
         rgsToken.setCreatedBy(userId);
         registrationTokenDao.save(rgsToken);

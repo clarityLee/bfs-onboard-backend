@@ -14,7 +14,6 @@ public class UserDaoHibernateImpl extends BasicTemplate implements UserDao {
     @Override
     public void save(User user) {
         super.save(user);
-//        templateSave(user);
     }
 
     @Override
@@ -22,4 +21,12 @@ public class UserDaoHibernateImpl extends BasicTemplate implements UserDao {
         List<User> results = getByField("username", username, User.class);
         return results.size() == 1 ? true : false;
     }
+
+    @Override
+    public User findByName(String username) {
+        List<User> result = getByField("username", username, User.class);
+        return result.size() == 1 ? result.get(0) : new User();
+    }
+
+
 }

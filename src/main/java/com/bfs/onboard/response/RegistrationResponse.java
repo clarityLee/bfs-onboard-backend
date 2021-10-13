@@ -16,4 +16,8 @@ public class RegistrationResponse {
     private String token;
     private String username;
     private String password;
+
+    public RegistrationResponse(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }
