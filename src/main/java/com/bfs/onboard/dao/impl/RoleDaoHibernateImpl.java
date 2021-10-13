@@ -1,5 +1,6 @@
 package com.bfs.onboard.dao.impl;
 
+import com.bfs.onboard.dao.RoleDao;
 import com.bfs.onboard.domain.Role;
 import org.springframework.stereotype.Repository;
 

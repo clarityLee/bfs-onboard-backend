@@ -1,4 +1,4 @@
-package com.bfs.onboard.dao.impl;
+package com.bfs.onboard.dao;
 
 import com.bfs.onboard.domain.Role;
 

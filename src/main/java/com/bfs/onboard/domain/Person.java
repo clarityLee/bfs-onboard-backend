@@ -28,6 +28,9 @@ public class Person {
     @Column(name = "middlename")
     private String middleName;
 
+    @Column(name = "preferreddname")
+    private String preferredName;
+
     @Column(name = "email")
     private String email;
 

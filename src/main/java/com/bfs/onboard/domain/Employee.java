@@ -41,6 +41,12 @@ public class Employee implements Serializable {
     @Column(name = "car")
     private String car;
 
+    @Column(name = "citizen")
+    private Boolean citizen;
+
+    @Column(name = "greencard")
+    private Boolean greenCard;
+
     @Column(name = "visastatusid")
     private String visaStatusID;
 
@@ -50,8 +56,8 @@ public class Employee implements Serializable {
     @Column(name = "visaenddate")
     private LocalDate visaEndDate;
 
-    @Column(name = "driverlisence")
-    private String driverLisence;
+    @Column(name = "driverlicense")
+    private String driverLicense;
 
     @Column(name = "driverlisence_expirationdate")
     private String driverLisence_ExpirationDate;
