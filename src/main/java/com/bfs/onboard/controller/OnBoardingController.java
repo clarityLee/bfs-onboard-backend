@@ -37,7 +37,7 @@ public class OnBoardingController {
 
         System.out.println("received");
         if (result)
-            return new ResponseEntity<>("success", HttpStatus.OK);
+            return new ResponseEntity<>("OK", HttpStatus.OK);
         else
             return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
     }

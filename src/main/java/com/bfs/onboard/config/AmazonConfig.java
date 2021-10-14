@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Configuration
 @PropertySource("classpath:GmailAmazonS3Rds.properties")
 public class AmazonConfig {
@@ -29,5 +32,13 @@ public class AmazonConfig {
                 .withRegion("us-east-2")
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
+    }
+
+    @Bean
+    public Set<String> s3Buckets() {
+        Set<String> set = new HashSet<>();
+        set.add("bfs-avatar");
+        set.add("bfs-onboard-files");
+        return set;
     }
 }

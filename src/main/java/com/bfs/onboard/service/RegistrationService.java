@@ -10,31 +10,24 @@ import com.bfs.onboard.domain.User;
 import com.bfs.onboard.domain.UserRole;
 import com.bfs.onboard.mail.MailService;
 import com.bfs.onboard.response.RegistrationResponse;
-import com.bfs.onboard.util.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.bfs.onboard.constant.Constant.REGISTRATION_TOKEN_VALID_DURATION_Days;
 
 @Service
 public class RegistrationService {
 
-
-    private TokenGenerator tokenGenerator;
     private MailService mailService;
 
     private RegistrationTokenDao registrationTokenDao;
     private RoleDao roleDao;
     private UserDao userDao;
     private UserRoleDao userRoleDao;
-
-    @Autowired
-    public void setTokenGenerator(TokenGenerator tokenGenerator) {
-        this.tokenGenerator = tokenGenerator;
-    }
 
     @Autowired
     public void setMailService(MailService mailService) {
@@ -69,7 +62,7 @@ public class RegistrationService {
      */
     @Transactional
     public String sendRegisterToken(Integer userId, String email) {
-        String token = tokenGenerator.registration();
+        String token = UUID.randomUUID().toString();
         RegistrationToken rgsToken = new RegistrationToken();
         rgsToken.setToken(token);
         rgsToken.setValidDuration(LocalDateTime.now().plusDays(REGISTRATION_TOKEN_VALID_DURATION_Days));
