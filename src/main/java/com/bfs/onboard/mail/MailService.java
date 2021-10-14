@@ -1,7 +1,6 @@
 package com.bfs.onboard.mail;
 
 import com.bfs.onboard.dao.RegistrationTokenDao;
-import com.bfs.onboard.util.TokenGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

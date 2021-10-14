@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class DevController {
@@ -48,5 +49,14 @@ public class DevController {
     @GetMapping("/login/register")
     public String registerPage() {
         return "registration";
+    }
+
+    @GetMapping("/test/upload")
+    @ResponseBody
+    public String testUpload() {
+
+
+        System.out.println("nothing happened.");
+        return "request complete";
     }
 }

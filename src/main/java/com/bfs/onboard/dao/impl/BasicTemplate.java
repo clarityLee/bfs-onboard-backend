@@ -26,6 +26,10 @@ public class BasicTemplate {
         sessionFactory.getCurrentSession().save(e);
     }
 
+    public <T> void delete(T e) {
+        sessionFactory.getCurrentSession().remove(e);
+    }
+
     <T> List<T> getAll(Class<T> c) {
         return getAllAndFetch(c, "");
     }

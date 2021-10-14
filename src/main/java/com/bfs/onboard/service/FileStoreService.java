@@ -4,15 +4,14 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class FileStoreService {
@@ -24,27 +23,13 @@ public class FileStoreService {
         this.amazonS3 = amazonS3;
     }
 
-    /**
-     *
-     * @param path Amazon S3 bucket where the file will be stored
-     * @param fileName the actual name of the file being uploaded. It will be used as the key when downloading the file from S3.
-     * @param optionalMetaData map contains the details of the file i.e file type and file size.
-     * @param inputStream contains the actual file that should be saved to Amazon S3
-     */
-    public void upload(String path,
-                       String fileName,
-                       Optional<Map<String, String>> optionalMetaData,
+    public void upload(String path, String fileName,
+                       String contentType, long contentLength,
                        InputStream inputStream) {
 
-        ObjectMetadata objectMetadata;
-
-        // loops through the optionalMetaData map adding all of the file information to the S3 objectMetaData.
-        objectMetadata = new ObjectMetadata();
-        optionalMetaData.ifPresent(map -> {
-            if (!map.isEmpty()) {
-                map.forEach(objectMetadata::addUserMetadata);
-            }
-        });
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(contentType);
+        objectMetadata.setContentLength(contentLength);
 
         try {
             // saves the file to Amazon S3 bucket.
@@ -54,13 +39,17 @@ public class FileStoreService {
         }
     }
 
-    public byte[] download(String path, String key) {
+    public Map<String, Object> download(String path, String key) {
+
         try {
             S3Object object = amazonS3.getObject(path, key);
+            String contentType = object.getObjectMetadata().getContentType();
 
-            // gets an inputStream from the object returned from Amazon S3.
-            S3ObjectInputStream objectContent = object.getObjectContent();
-            return IOUtils.toByteArray(objectContent);
+            byte[] byteArray = IOUtils.toByteArray(object.getObjectContent());
+            Map<String, Object> map = new HashMap<>();
+            map.put("byteArray", byteArray);
+            map.put("contentType", contentType);
+            return map;
         } catch (AmazonServiceException | IOException e) {
             throw new IllegalStateException("Failed to download the file", e);
         }
