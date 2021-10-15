@@ -3,15 +3,16 @@ package com.bfs.onboard.service;
 import com.bfs.onboard.dao.*;
 import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.*;
-import com.bfs.onboard.domain.requestDto.AddressDto;
 import com.bfs.onboard.domain.requestDto.ContactDto;
 import com.bfs.onboard.domain.requestDto.OnBoardingDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class OnBoardingService {
@@ -52,13 +53,21 @@ public class OnBoardingService {
         // TODO: check alternatePhone = workPhone ?
         p.setAlternatePhone(f.getWorkPhone());
         p.setGender(f.getGender());
-        p.setSsn(f.getSSN());
+        p.setSsn(f.getSsn());
         p.setDateOfBirth(f.getDateOfBirth());
         template.save(p);
+
+        // save user's current address
+        template.save(f.getCurrentAddress().toAddress(p.getId()));
+        //TODO: check if there are more than 1 address
 
         //TODO: PersonalDocument: DrivingLicense / WorkAuthorization Enum or Const
         Employee e = new Employee();
         e.setPersonId(p.getId());
+        if (StringUtils.hasLength(f.getAvatar())) {
+            e.setAvartar(f.getAvatar());
+            unclaimedFileDao.deleteByPath(f.getAvatar());
+        }
         e.setAvartar(f.getAvatar());
         e.setCar(f.getCar());
         e.setCitizen(f.getCitizen());
@@ -76,10 +85,9 @@ public class OnBoardingService {
             template.save(pd);
         }
         template.save(e);
-        unclaimedFileDao.deleteByPath(f.getAvatar());
 
         String workAuthorization = f.getWorkAuthorization();
-        if (workAuthorization != null && !workAuthorization.isEmpty()) {
+        if (StringUtils.hasLength(workAuthorization)) {
             VisaStatus v = new VisaStatus();
             v.setActive(true);
             v.setCreateUser(user.getId());
@@ -96,30 +104,25 @@ public class OnBoardingService {
             template.save(v);
         }
 
+        // save user's reference contact
         ContactDto ref = f.getReference();
-        if (ref != null && ref.getFirstName() != null && !ref.getFirstName().isEmpty()) {
-            Person pc = new Person();
-//            pc.
-//            Contact ct = new Contact();
-//            ct.set
+        if (ref != null) {
+            Person pc = ref.toPerson();
+            template.save(pc);
+            template.save(ref.getAddress().toAddress(pc.getId()));
+            template.save(ref.toRefContact(pc.getId()));
         }
 
-        f.getReference();
-        f.getEmergencyList();
-
-        //TODO: check if there are more than 1 address
-        Address ac = new Address();
-        ac.setPersonID(p.getId());
-        AddressDto adc = f.getCurrentAddress();
-        ac.setAddressLine1(adc.getAddressLine1());
-        ac.setAddressLine2(adc.getAddressLine2());
-        ac.setCity(adc.getCity());
-        ac.setStateAbbr(adc.getStateAbbr());
-        ac.setStateName(adc.getStateName());
-        ac.setZipcode(adc.getZipcode());
-        template.save(ac);
-
-        Contact emergencyContact = new Contact();
+        // save user's emergency contacts
+        List<ContactDto> el = f.getEmergencyList();
+        if (el != null && !el.isEmpty()) {
+            for (ContactDto c : el) {
+                Person pe = c.toPerson();
+                template.save(pe);
+                template.save(c.getAddress().toAddress(pe.getId()));
+                template.save(c.toEmergencyContact(pe.getId()));
+            }
+        }
 
         return true;
     }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -24,20 +25,14 @@ public class OnBoardingController {
     }
 
     @PostMapping("/on-boarding")
-    public ResponseEntity<String> onBoardingSubmit(HttpServletRequest httpServletRequest,
+    public ResponseEntity<List<String>> onBoardingSubmit(HttpServletRequest httpServletRequest,
                                                    @RequestBody final OnBoardingDto form) {
+        List<String> errs = form.errMessages();
+        if (!errs.isEmpty())
+            return new ResponseEntity<>(errs, HttpStatus.BAD_REQUEST);
 
-        // for dev - test
-        System.out.println("received");
-        return new ResponseEntity<>("OK", HttpStatus.OK);
-
-        //TODO: change back to normal flow:
-//        boolean result = onBoardingService.save(form);
-//
-//        if (result)
-//            return new ResponseEntity<>("OK", HttpStatus.OK);
-//        else
-//            return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
+        boolean result = onBoardingService.save(form);
+        return new ResponseEntity<>(errs, result ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 
 }

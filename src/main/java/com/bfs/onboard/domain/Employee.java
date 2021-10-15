@@ -60,7 +60,7 @@ public class Employee implements Serializable {
     private String driverLicense;
 
     @Column(name = "driverlicense_expirationdate")
-    private String driverLicence_ExpirationDate;
+    private LocalDate driverLicence_ExpirationDate;
 
     @Column(name = "houseid")
     private Long HouseID;
