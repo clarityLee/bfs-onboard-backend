@@ -3,7 +3,7 @@ package com.bfs.onboard.service;
 import com.bfs.onboard.dao.RegistrationTokenDao;
 import com.bfs.onboard.dao.RoleDao;
 import com.bfs.onboard.dao.UserDao;
-import com.bfs.onboard.dao.UserRoleDao;
+import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.RegistrationToken;
 import com.bfs.onboard.domain.Role;
 import com.bfs.onboard.domain.User;
@@ -11,6 +11,7 @@ import com.bfs.onboard.domain.UserRole;
 import com.bfs.onboard.mail.MailService;
 import com.bfs.onboard.response.RegistrationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,16 +25,20 @@ public class RegistrationService {
 
     private MailService mailService;
 
+    private BasicTemplate template;
     private RegistrationTokenDao registrationTokenDao;
     private RoleDao roleDao;
     private UserDao userDao;
-    private UserRoleDao userRoleDao;
 
+    @Autowired
+    @Qualifier("hibernateTemplate")
+    public void setTemplate(BasicTemplate template) {
+        this.template = template;
+    }
     @Autowired
     public void setMailService(MailService mailService) {
         this.mailService = mailService;
     }
-
     @Autowired
     public void setRegistrationTokenDao(RegistrationTokenDao registrationTokenDao) {
         this.registrationTokenDao = registrationTokenDao;
@@ -47,11 +52,6 @@ public class RegistrationService {
     @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
-    }
-
-    @Autowired
-    public void setUserRoleDao(UserRoleDao userRoleDao) {
-        this.userRoleDao = userRoleDao;
     }
 
     /**
@@ -68,9 +68,15 @@ public class RegistrationService {
         rgsToken.setValidDuration(LocalDateTime.now().plusDays(REGISTRATION_TOKEN_VALID_DURATION_Days));
         rgsToken.setEmail(email);
         rgsToken.setCreatedBy(userId);
-        registrationTokenDao.save(rgsToken);
+        template.save(rgsToken);
 
         return mailService.sendRegisterToken(email, token);
+    }
+
+    @Transactional
+    public boolean sendRegisterToken(String username, String email) {
+        User user = userDao.findByName(username);
+        return !sendRegisterToken(user.getId(), email).isEmpty();
     }
 
     @Transactional
@@ -104,7 +110,7 @@ public class RegistrationService {
         user.setPassword(password);
         user.setCreateDate(now);
         user.setModificationDate(now);
-        userDao.save(user);
+        template.save(user);
 
         Role role = roleDao.findByRole("candidate");
 
@@ -115,7 +121,7 @@ public class RegistrationService {
         ur.setCreateDate(now);
         ur.setModificationDate(now);
         ur.setLastModificationUser(1);
-        userRoleDao.save(ur);
+        template.save(ur);
 
         response.setSuccess(true);
         return response;

@@ -19,6 +19,7 @@ public class VisaStatus {
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
+    // H1-B, L2, F1(CPT/OPT), H4, Other
     @Column(name = "visatype")
     private String visaType;
 

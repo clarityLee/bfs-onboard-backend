@@ -1,9 +1,11 @@
 package com.bfs.onboard.service;
 
 import com.bfs.onboard.dao.UnclaimedFileDao;
+import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.UnclaimedFile;
 import com.bfs.onboard.response.UploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,11 +17,12 @@ import java.util.*;
 @Service
 public class UpDownloadService {
 
-    private UnclaimedFileDao unclaimedFileDao;
+    private BasicTemplate template;
 
     @Autowired
-    public void setUnclaimedFileDao(UnclaimedFileDao unclaimedFileDao) {
-        this.unclaimedFileDao = unclaimedFileDao;
+    @Qualifier("hibernateTemplate")
+    public void setTempalte(BasicTemplate template) {
+        this.template = template;
     }
 
     private FileStoreService fileStoreService;
@@ -37,7 +40,7 @@ public class UpDownloadService {
         UnclaimedFile ucf = new UnclaimedFile();
         ucf.setPath(response.getPath());
         ucf.setCreateDate(LocalDateTime.now());
-        unclaimedFileDao.save(ucf);
+        template.save(ucf);
 
         return response;
     }

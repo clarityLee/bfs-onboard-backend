@@ -10,13 +10,12 @@ import javax.transaction.Transactional;
 @Transactional
 public class UnclaimedFileDaoHibernateImpl extends BasicTemplate implements UnclaimedFileDao {
 
-    @Override
-    public void save(UnclaimedFile unclaimedFile) {
-        super.save(unclaimedFile);
-    }
+    private final static String DELETE_BY_PATH = "delete from unclaimedfile where path= :path";
 
     @Override
-    public void delete(UnclaimedFile unclaimedFile) {
-        super.delete(unclaimedFile);
+    public void deleteByPath(String path) {
+        sessionFactory.getCurrentSession().createQuery(DELETE_BY_PATH)
+                .setParameter("path", path).executeUpdate();
     }
+
 }
