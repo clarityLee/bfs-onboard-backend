@@ -20,6 +20,12 @@ public class MailService {
         this.javaMailSender = javaMailSender;
     }
 
+    /**
+     *
+     * @param email
+     * @param token
+     * @return registration link if success; blank if failed
+     */
     public String sendRegisterToken(String email, String token) {
 
         SimpleMailMessage msg = new SimpleMailMessage();
@@ -30,8 +36,11 @@ public class MailService {
                 .append("?email=").append(email)
                 .append("&token=").append(token).toString();
         msg.setText(link);
-        javaMailSender.send(msg);
-
-        return link;
+        try {
+            javaMailSender.send(msg);
+            return link;
+        } catch(org.springframework.mail.MailException e) {
+            return "";
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.bfs.onboard.config;
 
+import com.bfs.onboard.dao.impl.BasicTemplate;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -65,5 +66,10 @@ public class HibernateConfig {
                 "hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 
         return hibernateProperties;
+    }
+
+    @Bean
+    public BasicTemplate hibernateTemplate() {
+        return new BasicTemplate();
     }
 }

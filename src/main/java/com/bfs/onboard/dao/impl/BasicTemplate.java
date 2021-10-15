@@ -3,13 +3,18 @@ package com.bfs.onboard.dao.impl;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.util.List;
 
+@Repository
+@Transactional
 public class BasicTemplate {
 
     SessionFactory sessionFactory;
@@ -19,9 +24,6 @@ public class BasicTemplate {
         this.sessionFactory = sessionFactory;
     }
 
-//    public <T> void templateSave(T e) {
-//        sessionFactory.getCurrentSession().save(e);
-//    }
     public <T> void save(T e) {
         sessionFactory.getCurrentSession().save(e);
     }
