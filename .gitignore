@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/GmailAmazonS3Rds.properties
+
+### System Files ###
+.DS_Store
