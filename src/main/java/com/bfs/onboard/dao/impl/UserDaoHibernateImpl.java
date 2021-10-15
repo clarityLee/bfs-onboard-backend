@@ -12,14 +12,9 @@ import java.util.List;
 public class UserDaoHibernateImpl extends BasicTemplate implements UserDao {
 
     @Override
-    public void save(User user) {
-        super.save(user);
-    }
-
-    @Override
     public boolean exist(String username) {
         List<User> results = getByField("username", username, User.class);
-        return results.size() == 1 ? true : false;
+        return results.size() == 1;
     }
 
     @Override

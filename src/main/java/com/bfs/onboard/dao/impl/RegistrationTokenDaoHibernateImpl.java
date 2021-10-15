@@ -18,11 +18,6 @@ import java.util.List;
 public class RegistrationTokenDaoHibernateImpl extends BasicTemplate implements RegistrationTokenDao {
 
     @Override
-    public void save(RegistrationToken registrationToken) {
-        super.save(registrationToken);
-    }
-
-    @Override
     public boolean validate(String email, String token, LocalDateTime now) {
         Session session = sessionFactory.getCurrentSession();
 

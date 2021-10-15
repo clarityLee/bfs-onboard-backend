@@ -4,12 +4,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class OnBoardingDto {
+
+    // * required, hidden from user;
+    private String username;
+    private String email;
 
     // * required
     private String firstName;
@@ -36,7 +41,7 @@ public class OnBoardingDto {
     private String SSN;
 
     // * required
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
 
     // * required: Male, Female, I don't want to answer
     private String Gender;

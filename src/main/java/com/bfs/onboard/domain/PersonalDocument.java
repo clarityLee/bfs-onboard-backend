@@ -25,13 +25,14 @@ public class PersonalDocument {
     @Column(name = "path")
     private String path;
 
+    // "I-983 Filled", "OPT EAD", "OPT Receipt", "I-20", "I-983 Signed", "OPT STEM EAD", "OPT STEM Receipt"
     @Column(name = "title")
     private String title;
 
     @Column(name = "comment")
     private String comment;
 
-    @Column(name = "createddate")
+    @Column(name = "createdate")
     private LocalDateTime createdDate;
 
     @Column(name = "createdby")

@@ -47,8 +47,7 @@ public class UploadDLController {
                 MediaType.IMAGE_JPEG,
                 MediaType.IMAGE_PNG,
                 MediaType.IMAGE_GIF,
-                MediaType.APPLICATION_PDF,
-                MediaType.APPLICATION_OCTET_STREAM));
+                MediaType.APPLICATION_PDF));
     }
 
     @PostMapping(value = "/upload/{bucketName}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -71,14 +70,13 @@ public class UploadDLController {
                                            @PathVariable(name = "filename") String filename) {
 
         Map<String, Object> map = fileStoreService.download(bucketName + "/" + uuid, filename);
-        HttpHeaders responseHeaders = new HttpHeaders();
-
         MediaType mediaType = MediaType.parseMediaType((String) map.get("contentType"));
-        if (!mediaTypes.contains(mediaType)) {
-            mediaType = MediaType.APPLICATION_OCTET_STREAM;
-            responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
-        }
-        responseHeaders.setContentType(mediaType);
+        boolean previewAble = mediaTypes.contains(mediaType);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
+                (previewAble ? "inline" : "attachment") + "; filename=" + filename);
+        responseHeaders.setContentType(previewAble ? mediaType : mediaType.APPLICATION_OCTET_STREAM);
         return new ResponseEntity<>((byte[]) map.get("byteArray"), responseHeaders, HttpStatus.OK);
     }
 }
