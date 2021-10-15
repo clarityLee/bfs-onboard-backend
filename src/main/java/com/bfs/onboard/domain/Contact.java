@@ -27,12 +27,12 @@ public class Contact {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "isreferrence")
-    private Boolean isReferrence;
+    @Column(name = "isreference")
+    private Boolean isReference = false;
 
     @Column(name = "isemergency")
-    private Boolean isEmergency;
+    private Boolean isEmergency = false;
 
     @Column(name = "islandlord")
-    private Boolean isLandlord;
+    private Boolean isLandlord = false;
 }
