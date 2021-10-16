@@ -19,21 +19,23 @@ public class ApplicationWorkFlow {
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
-    @Column(name = "employeeid")
-    private Integer employeeID;
-
-    @Column(name = "createddate")
-    private LocalDateTime createdDate;
-
-    @Column(name = "modificationdate")
-    private LocalDateTime modificationDate;
+    @Column(name = "type")
+    private String type;
 
     @Column(name = "status")
-    private String status;
+    private Integer status;
 
     @Column(name = "comments")
     private String comments;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "createdate")
+    private LocalDateTime createDate;
+
+    @Column(name = "modificationdate")
+    private LocalDateTime modificationDate;
+
+    @OneToOne
+    @JoinColumn(name = "employeeId")
+    private Employee employee;
+
 }

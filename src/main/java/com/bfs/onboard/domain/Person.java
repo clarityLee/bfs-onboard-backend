@@ -28,7 +28,7 @@ public class Person {
     @Column(name = "middlename")
     private String middleName;
 
-    @Column(name = "preferreddname")
+    @Column(name = "preferredname")
     private String preferredName;
 
     @Column(name = "email")
@@ -48,4 +48,7 @@ public class Person {
 
     @Column(name = "dateofbirth")
     private LocalDate dateOfBirth;
+
+    @OneToOne(mappedBy = "person")
+    private Employee employee;
 }

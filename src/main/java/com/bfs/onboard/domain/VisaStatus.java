@@ -31,4 +31,7 @@ public class VisaStatus {
 
     @Column(name = "createuser")
     private Integer createUser;
+
+    @OneToOne(mappedBy = "visaStatus")
+    private Employee employee;
 }

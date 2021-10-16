@@ -13,7 +13,6 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Repository
 @Transactional
 public class BasicTemplate {
 
@@ -30,6 +29,11 @@ public class BasicTemplate {
 
     public <T> void delete(T e) {
         sessionFactory.getCurrentSession().remove(e);
+    }
+
+    public <T> T findById(Integer id, Class<T> c) {
+        List<T> results = getByField("id", id, c);
+        return results.size() == 1 ? results.get(0) : null;
     }
 
     <T> List<T> getAll(Class<T> c) {

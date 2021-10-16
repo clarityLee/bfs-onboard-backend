@@ -23,5 +23,11 @@ public class UserDaoHibernateImpl extends BasicTemplate implements UserDao {
         return result.size() == 1 ? result.get(0) : new User();
     }
 
+    @Override
+    public User findByPersonId(Integer personId) {
+        List<User> res = getByField("personId", personId, User.class);
+        return res.size() == 1 ? res.get(0) : new User();
+    }
+
 
 }

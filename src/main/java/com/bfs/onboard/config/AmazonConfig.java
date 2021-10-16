@@ -23,6 +23,11 @@ public class AmazonConfig {
     @Value("${s3.secret.key}")
     private String secretKey;
 
+    public final static String AVATAR = "bfs-avatar";
+    public final static String DRIVING_LICENSE = "bfs-driving-license";
+    public final static String WORK_AUTHORICATION = "bfs-work-authorization";
+    public final static String ONBIARDING_FILES = "bfs-onboard-files";
+
     @Bean
     public AmazonS3 s3() {
         AWSCredentials awsCredentials =
@@ -37,8 +42,10 @@ public class AmazonConfig {
     @Bean
     public Set<String> s3Buckets() {
         Set<String> set = new HashSet<>();
-        set.add("bfs-avatar");
-        set.add("bfs-onboard-files");
+        set.add(AVATAR);
+        set.add(DRIVING_LICENSE);
+        set.add(WORK_AUTHORICATION);
+        set.add(ONBIARDING_FILES);
         return set;
     }
 }
