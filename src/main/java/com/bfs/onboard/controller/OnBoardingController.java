@@ -28,6 +28,7 @@ public class OnBoardingController {
     public ResponseEntity<List<String>> onBoardingSubmit(HttpServletRequest httpServletRequest,
                                                    @RequestBody final OnBoardingDto form) {
         List<String> errs = form.errMessages();
+
         if (!errs.isEmpty())
             return new ResponseEntity<>(errs, HttpStatus.BAD_REQUEST);
 

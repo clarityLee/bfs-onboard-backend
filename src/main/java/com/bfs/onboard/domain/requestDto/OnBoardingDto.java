@@ -1,5 +1,6 @@
 package com.bfs.onboard.domain.requestDto;
 
+import com.bfs.onboard.constant.WorkAuth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,6 +57,9 @@ public class OnBoardingDto {
     // H1-B, L2, F1(CPT/OPT), H4, Other
     private String workAuthorization;
 
+    private LocalDate visastartdate;
+    private LocalDate visaenddate;
+
     // the path for uploaded work Authorization Document path
     private String workAuthUploadPath;
 
@@ -65,8 +69,11 @@ public class OnBoardingDto {
     private String driveLicenseNumber;
     private LocalDate driveLicenseExpireDate;
 
-    // the path for uploaded Driving License Picture Path
+    // the path for Driving License Picture
     private String driveLicensePath;
+
+    // * required, the path for OPT receipt
+    private String optReceipt;
 
     private ContactDto reference;
 
@@ -99,8 +106,7 @@ public class OnBoardingDto {
 
         if (resident != null && !resident) {
             if (StringUtils.hasLength(workAuthorization)) {
-                List<String> accepts = Arrays.asList("H1-B", "L2", "F1(CPT/OPT)", "H4", "Other");
-                if (!accepts.contains(workAuthorization))
+                if (!WorkAuth.contains(workAuthorization))
                     e.add("wrong workAuthorization. workAuthorization must be in: H1-B, L2, F1(CPT/OPT), H4, Other" );
                 if (!StringUtils.hasLength(workAuthUploadPath))
                     e.add("Missing workAuthUploadPath.");
@@ -138,6 +144,9 @@ public class OnBoardingDto {
             checkConatct(e, reference, "reference contact");
             checkAddress(e, reference.getAddress(), "reference contact");
         }
+
+        if (!StringUtils.hasLength(optReceipt))
+            e.add("optReceipt err");
 
         return e;
     }

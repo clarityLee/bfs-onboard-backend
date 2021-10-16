@@ -1,10 +1,14 @@
 package com.bfs.onboard.service;
 
+import com.bfs.onboard.constant.AppWorkStatus;
+import com.bfs.onboard.constant.DocumentType;
 import com.bfs.onboard.dao.*;
 import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.*;
 import com.bfs.onboard.domain.requestDto.ContactDto;
 import com.bfs.onboard.domain.requestDto.OnBoardingDto;
+import com.bfs.onboard.domain.response.OnboardingAppDto;
+import com.bfs.onboard.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -18,7 +22,9 @@ import java.util.List;
 public class OnBoardingService {
 
     private BasicTemplate template;
+    private MailService mailService;
     private UnclaimedFileDao unclaimedFileDao;
+    private OnboardingDao onboardingDao;
     private UserDao userDao;
 
     @Autowired
@@ -31,8 +37,16 @@ public class OnBoardingService {
         this.unclaimedFileDao = unclaimedFileDao;
     }
     @Autowired
+    public void setOnboardingDao(OnboardingDao onboardingDao) {
+        this.onboardingDao = onboardingDao;
+    }
+    @Autowired
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
+    }
+    @Autowired
+    public void setMailService(MailService mailService) {
+        this.mailService = mailService;
     }
 
     @Transactional
@@ -57,13 +71,16 @@ public class OnBoardingService {
         p.setDateOfBirth(f.getDateOfBirth());
         template.save(p);
 
+        user.setPersonId(p.getId());
+        template.save(user);
+
         // save user's current address
         template.save(f.getCurrentAddress().toAddress(p.getId()));
         //TODO: check if there are more than 1 address
 
         //TODO: PersonalDocument: DrivingLicense / WorkAuthorization Enum or Const
         Employee e = new Employee();
-        e.setPersonId(p.getId());
+        e.setPerson(p);
         if (StringUtils.hasLength(f.getAvatar())) {
             e.setAvartar(f.getAvatar());
             unclaimedFileDao.deleteByPath(f.getAvatar());
@@ -72,6 +89,8 @@ public class OnBoardingService {
         e.setCar(f.getCar());
         e.setCitizen(f.getCitizen());
         e.setGreenCard(f.getGreenCard());
+
+        // save driving license
         if (f.getHasDriveLicense()) {
             e.setDriverLicense(f.getDriveLicenseNumber());
             e.setDriverLicence_ExpirationDate(f.getDriveLicenseExpireDate());
@@ -79,7 +98,7 @@ public class OnBoardingService {
             PersonalDocument pd = new PersonalDocument();
             pd.setEmployeeID(e.getId());
             pd.setPath(f.getDriveLicensePath());
-            pd.setTitle("DrivingLicense");
+            pd.setTitle(DocumentType.DRIVING_LICENSE);
             pd.setCreatedDate(LocalDateTime.now());
             pd.setCreatedBy(user.getId());
             template.save(pd);
@@ -98,7 +117,7 @@ public class OnBoardingService {
             PersonalDocument pd = new PersonalDocument();
             pd.setEmployeeID(e.getId());
             pd.setPath(f.getWorkAuthUploadPath());
-            pd.setTitle("WorkAuthorization");
+            pd.setTitle(DocumentType.WORK_AUTHORIZATION);
             pd.setCreatedDate(LocalDateTime.now());
             pd.setCreatedBy(user.getId());
             template.save(v);
@@ -124,6 +143,43 @@ public class OnBoardingService {
             }
         }
 
+        // save OPT receipt
+        PersonalDocument pd = new PersonalDocument();
+        pd.setEmployeeID(e.getId());
+        pd.setPath(f.getOptReceipt());
+        pd.setTitle(DocumentType.WORK_AUTHORIZATION);
+        pd.setCreatedDate(LocalDateTime.now());
+        pd.setCreatedBy(user.getId());
+        template.save(pd);
+
+        ApplicationWorkFlow a = new ApplicationWorkFlow();
+        a.setEmployee(e);
+        a.setCreateDate(LocalDateTime.now());
+        a.setModificationDate(LocalDateTime.now());
+        a.setType(AppWorkStatus.TYPE_ONBOARDING);
+        a.setStatus(AppWorkStatus.STATUS_PENDING);
+        template.save(a);
+
         return true;
+    }
+
+    public List<OnboardingAppDto> getAll() {
+        return onboardingDao.getAll();
+    }
+
+    @Transactional
+    public void hrDecision(Integer applicationWorkFlowId, Boolean accept, List<String> rejectReason) {
+        ApplicationWorkFlow a = template.findById(applicationWorkFlowId, ApplicationWorkFlow.class);
+        a.setStatus(accept ? AppWorkStatus.STATUS_COMPLETED : AppWorkStatus.STATUS_REJECTED);
+        template.save(a);
+
+        // TODO: fetch in one query with above query
+        // TODO: maybe employee need to be initialized
+        Employee employee = template.findById(a.getEmployee().getId(), Employee.class);
+        Person person = template.findById(employee.getPerson().getId(), Person.class);
+        User user = userDao.findByPersonId(person.getId());
+
+        //TODO: mail service, tell you're accepted or rejected with reason.
+        mailService.hireDecision(user, person, accept, rejectReason);
     }
 }

@@ -20,8 +20,9 @@ public class Employee implements Serializable {
     @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 
-    @Column(name = "personid")
-    private Integer personId;
+    @OneToOne
+    @JoinColumn(name = "personid")
+    private Person person;
 
     @Column(name = "title")
     private String title;
@@ -35,7 +36,7 @@ public class Employee implements Serializable {
     @Column(name = "endDate")
     private LocalDate endDate;
 
-    @Column(name = "avatar")
+    @Column(name = "avartar")
     private String avartar;
 
     @Column(name = "car")
@@ -47,11 +48,12 @@ public class Employee implements Serializable {
     @Column(name = "greencard")
     private Boolean greenCard;
 
-    @Column(name = "visastatusid")
-    private LocalDate visaStatusID;
+    @OneToOne
+    @JoinColumn(name = "visastatusid")
+    private VisaStatus visaStatus;
 
     @Column(name = "visastartdate")
-    private LocalDate VisaStartDate;
+    private LocalDate visaStartDate;
 
     @Column(name = "visaenddate")
     private LocalDate visaEndDate;
@@ -64,4 +66,10 @@ public class Employee implements Serializable {
 
     @Column(name = "houseid")
     private Long HouseID;
+
+    @Column(name = "active")
+    private Boolean active = false;
+
+    @OneToOne(mappedBy = "employee")
+    private ApplicationWorkFlow applicationWorkFlow;
 }

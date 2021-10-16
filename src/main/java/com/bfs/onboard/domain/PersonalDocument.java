@@ -25,7 +25,7 @@ public class PersonalDocument {
     @Column(name = "path")
     private String path;
 
-    // "I-983 Filled", "OPT EAD", "OPT Receipt", "I-20", "I-983 Signed", "OPT STEM EAD", "OPT STEM Receipt"
+    // DocumentType.WORK_AUTHORIZATION, DocumentType.DRIVING_LICENSE.
     @Column(name = "title")
     private String title;
 

@@ -31,6 +31,11 @@ public class BasicTemplate {
         sessionFactory.getCurrentSession().remove(e);
     }
 
+    public <T> T findById(Integer id, Class<T> c) {
+        List<T> results = getByField("id", id, c);
+        return results.size() == 1 ? results.get(0) : null;
+    }
+
     <T> List<T> getAll(Class<T> c) {
         return getAllAndFetch(c, "");
     }
