@@ -26,15 +26,13 @@ public class DocumentService {
         this.personalDocumentDao = personalDocumentDao;
     }
 
-    public List<PersonalDocument> getWorkDocs(Integer employeeId) {
-        return personalDocumentDao.getByEmployee(employeeId).stream()
-                .filter(p -> DocumentType.WORK_AUTHORIZATION.equals(p.getTitle()))
-                .collect(Collectors.toList());
-    }
-
     public void saveComment(Integer personalDocumentId, String comment) {
         PersonalDocument p = template.findById(personalDocumentId, PersonalDocument.class);
         p.setComment(comment);
         template.save(p);
+    }
+
+    public List<PersonalDocument> getWorkDocs(Integer employeeId) {
+        return personalDocumentDao.getWorkDocsByEmployee(employeeId);
     }
 }

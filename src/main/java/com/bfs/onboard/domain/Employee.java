@@ -1,5 +1,6 @@
 package com.bfs.onboard.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Employee implements Serializable {
 
     @Id
@@ -65,11 +67,39 @@ public class Employee implements Serializable {
     private LocalDate driverLicence_ExpirationDate;
 
     @Column(name = "houseid")
-    private Long HouseID;
+    private Long houseID;
 
     @Column(name = "active")
     private Boolean active = false;
 
+    @Column(name = "workemail")
+    private String workEmail;
+
+    @Column(name = "workphone")
+    private String workPhone;
+
     @OneToOne(mappedBy = "employee")
     private ApplicationWorkFlow applicationWorkFlow;
+
+    public Employee removeMapping() {
+        Employee e = new Employee();
+        e.setId(id);
+        e.setTitle(title);
+        e.setManagerId(managerId);
+        e.setStartDate(startDate);
+        e.setEndDate(endDate);
+        e.setAvartar(avartar);
+        e.setCar(car);
+        e.setCitizen(citizen);
+        e.setGreenCard(greenCard);
+        e.setVisaStartDate(visaStartDate);
+        e.setVisaEndDate(visaEndDate);
+        e.setDriverLicense(driverLicense);
+        e.setDriverLicence_ExpirationDate(driverLicence_ExpirationDate);
+        e.setHouseID(houseID);
+        e.setActive(active);
+        e.setWorkPhone(workPhone);
+        e.setWorkPhone(workPhone);
+        return e;
+    }
 }

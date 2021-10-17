@@ -1,5 +1,6 @@
 package com.bfs.onboard.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisaStatus {
 
     @Id
@@ -34,4 +36,13 @@ public class VisaStatus {
 
     @OneToOne(mappedBy = "visaStatus")
     private Employee employee;
+
+    public VisaStatus removeMapping() {
+        VisaStatus v = new VisaStatus();
+        v.setId(id);
+        v.setActive(active);
+        v.setModificationDate(modificationDate);
+        v.setCreateUser(createUser);
+        return v;
+    }
 }

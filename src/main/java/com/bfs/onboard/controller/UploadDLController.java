@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@CrossOrigin
 public class UploadDLController {
 
     private Set<MediaType> mediaTypes;

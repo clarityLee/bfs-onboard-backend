@@ -64,7 +64,6 @@ public class HibernateConfig {
                 "hibernate.hbm2ddl.auto", "update");
         hibernateProperties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-
         return hibernateProperties;
     }
 
