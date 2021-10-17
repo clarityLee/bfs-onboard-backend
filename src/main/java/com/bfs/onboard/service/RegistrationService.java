@@ -21,6 +21,7 @@ import java.util.UUID;
 import static com.bfs.onboard.constant.Constant.REGISTRATION_TOKEN_VALID_DURATION_Days;
 
 @Service
+@Transactional
 public class RegistrationService {
 
     private MailService mailService;
@@ -60,7 +61,6 @@ public class RegistrationService {
      * @param email email to receive registration token
      * @return an url linking to registration page
      */
-    @Transactional
     public String sendRegisterToken(Integer userId, String email) {
         String token = UUID.randomUUID().toString();
         RegistrationToken rgsToken = new RegistrationToken();
@@ -73,13 +73,11 @@ public class RegistrationService {
         return mailService.sendRegisterToken(email, token);
     }
 
-    @Transactional
     public boolean sendRegisterToken(String username, String email) {
         User user = userDao.findByName(username);
         return !sendRegisterToken(user.getId(), email).isEmpty();
     }
 
-    @Transactional
     public RegistrationResponse register(String email, String token, String username, String password) {
 
         RegistrationResponse response = new RegistrationResponse();

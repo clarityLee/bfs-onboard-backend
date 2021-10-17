@@ -1,6 +1,7 @@
 package com.bfs.onboard.dao.impl;
 
 import com.bfs.onboard.dao.EmployeeDao;
+import com.bfs.onboard.domain.Address;
 import com.bfs.onboard.domain.Employee;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -14,10 +15,10 @@ public class EmployeeDaoHibernateImpl extends BasicTemplate implements EmployeeD
 
     @Override
     public Employee fetchDetail(Integer employeeId) {
-        Session session = sessionFactory.getCurrentSession();
         Employee employee = findById(employeeId, Employee.class);
         Hibernate.initialize(employee.getPerson());
         Hibernate.initialize(employee.getPerson().getUser());
+        Hibernate.initialize(employee.getPerson().getAddresses());
         Hibernate.initialize(employee.getApplicationWorkFlow());
         Hibernate.initialize(employee.getVisaStatus());
         return employee;
