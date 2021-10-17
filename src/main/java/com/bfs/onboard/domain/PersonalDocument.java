@@ -31,6 +31,9 @@ public class PersonalDocument {
 
     @Column(name = "comment")
     private String comment;
+    public String getComment() {
+        return comment == null ? "" : comment;
+    }
 
     @Column(name = "createdate")
     private LocalDateTime createdDate;

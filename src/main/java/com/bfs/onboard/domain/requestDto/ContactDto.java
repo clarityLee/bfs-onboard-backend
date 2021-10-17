@@ -29,19 +29,21 @@ public class ContactDto {
         return p;
     }
 
-    public Contact toRefContact(Integer personId) {
+    public Contact toRefContact(Person person, Integer ownerId) {
         Contact c = new Contact();
-        c.setPersonID(personId);
+        c.setPerson(person);
         c.setRelationship(relationship);
         c.setIsReference(true);
+        c.setOwnerId(ownerId);
         return c;
     }
 
-    public Contact toEmergencyContact(Integer personId) {
+    public Contact toEmergencyContact(Person personId, Integer ownerId) {
         Contact c = new Contact();
-        c.setPersonID(personId);
+        c.setPerson(personId);
         c.setRelationship(relationship);
         c.setIsEmergency(true);
+        c.setOwnerId(ownerId);
         return c;
     }
 }

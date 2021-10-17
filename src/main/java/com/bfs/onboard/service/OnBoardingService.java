@@ -22,6 +22,7 @@ import java.util.List;
 public class OnBoardingService {
 
     private BasicTemplate template;
+    private EmployeeDao employeeDao;
     private MailService mailService;
     private UnclaimedFileDao unclaimedFileDao;
     private OnboardingDao onboardingDao;
@@ -31,6 +32,10 @@ public class OnBoardingService {
     @Qualifier("hibernateTemplate")
     public void setTemplate(BasicTemplate daoTemplate) {
         this.template = daoTemplate;
+    }
+    @Autowired
+    public void setEmployeeDao(EmployeeDao employeeDao) {
+        this.employeeDao = employeeDao;
     }
     @Autowired
     public void setUnclaimedFileDao(UnclaimedFileDao unclaimedFileDao) {
@@ -71,11 +76,11 @@ public class OnBoardingService {
         p.setDateOfBirth(f.getDateOfBirth());
         template.save(p);
 
-        user.setPersonId(p.getId());
+        user.setPerson(p);
         template.save(user);
 
         // save user's current address
-        template.save(f.getCurrentAddress().toAddress(p.getId()));
+        template.save(f.getCurrentAddress().toAddress(p));
         //TODO: check if there are more than 1 address
 
         //TODO: PersonalDocument: DrivingLicense / WorkAuthorization Enum or Const
@@ -95,13 +100,7 @@ public class OnBoardingService {
             e.setDriverLicense(f.getDriveLicenseNumber());
             e.setDriverLicence_ExpirationDate(f.getDriveLicenseExpireDate());
 
-            PersonalDocument pd = new PersonalDocument();
-            pd.setEmployeeID(e.getId());
-            pd.setPath(f.getDriveLicensePath());
-            pd.setTitle(DocumentType.DRIVING_LICENSE);
-            pd.setCreatedDate(LocalDateTime.now());
-            pd.setCreatedBy(user.getId());
-            template.save(pd);
+
         }
         String workAuthorization = f.getWorkAuthorization();
         if (StringUtils.hasLength(workAuthorization)) {
@@ -125,6 +124,16 @@ public class OnBoardingService {
             pd.setTitle(DocumentType.WORK_AUTHORIZATION);
             pd.setCreatedDate(LocalDateTime.now());
             pd.setCreatedBy(user.getId());
+            template.save(pd);
+        }
+        if (f.getHasDriveLicense()) {
+            PersonalDocument pd = new PersonalDocument();
+            pd.setEmployeeID(e.getId());
+            pd.setPath(f.getDriveLicensePath());
+            pd.setTitle(DocumentType.DRIVING_LICENSE);
+            pd.setCreatedDate(LocalDateTime.now());
+            pd.setCreatedBy(user.getId());
+            template.save(pd);
         }
 
         // save user's reference contact
@@ -132,8 +141,8 @@ public class OnBoardingService {
         if (ref != null) {
             Person pc = ref.toPerson();
             template.save(pc);
-            template.save(ref.getAddress().toAddress(pc.getId()));
-            template.save(ref.toRefContact(pc.getId()));
+            template.save(ref.getAddress().toAddress(pc));
+            template.save(ref.toRefContact(pc, p.getId()));
         }
 
         // save user's emergency contacts
@@ -142,8 +151,8 @@ public class OnBoardingService {
             for (ContactDto c : el) {
                 Person pe = c.toPerson();
                 template.save(pe);
-                template.save(c.getAddress().toAddress(pe.getId()));
-                template.save(c.toEmergencyContact(pe.getId()));
+                template.save(c.getAddress().toAddress(pe));
+                template.save(c.toEmergencyContact(pe, p.getId()));
             }
         }
 
@@ -171,19 +180,25 @@ public class OnBoardingService {
         return onboardingDao.getAll();
     }
 
-    @Transactional
-    public void hrDecision(Integer applicationWorkFlowId, Boolean accept, List<String> rejectReason) {
+    public boolean hiringApprove(Integer applicationWorkFlowId) {
         ApplicationWorkFlow a = template.findById(applicationWorkFlowId, ApplicationWorkFlow.class);
-        a.setStatus(accept ? AppWorkStatus.STATUS_COMPLETED : AppWorkStatus.STATUS_REJECTED);
+        a.setStatus(AppWorkStatus.STATUS_COMPLETED);
         template.save(a);
+        Employee employee = employeeDao.fetchForEmail(a.getEmployee().getId());
+        return mailService.hiringApprove(employee);
+    }
 
-        // TODO: fetch in one query with above query
-        // TODO: maybe employee need to be initialized
-        Employee employee = template.findById(a.getEmployee().getId(), Employee.class);
-        Person person = template.findById(employee.getPerson().getId(), Person.class);
-        User user = userDao.findByPersonId(person.getId());
+    public boolean hiringReject(Integer applicationWorkFlowId, List<String> rejectReasons) {
+        ApplicationWorkFlow a = template.findById(applicationWorkFlowId, ApplicationWorkFlow.class);
+        a.setStatus(AppWorkStatus.STATUS_REJECTED);
+        template.save(a);
+        Employee employee = employeeDao.fetchForEmail(a.getEmployee().getId());
+        return mailService.hiringReject(employee, rejectReasons);
+    }
 
-        //TODO: mail service, tell you're accepted or rejected with reason.
-        mailService.hireDecision(user, person, accept, rejectReason);
+    public void saveComment(Integer applicationWorkFlowId, String comment) {
+        ApplicationWorkFlow a = template.findById(applicationWorkFlowId, ApplicationWorkFlow.class);
+        a.setComments(comment);
+        template.save(a);
     }
 }

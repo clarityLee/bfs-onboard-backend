@@ -1,6 +1,7 @@
 package com.bfs.onboard.mail;
 
 import com.bfs.onboard.dao.RegistrationTokenDao;
+import com.bfs.onboard.domain.Employee;
 import com.bfs.onboard.domain.Person;
 import com.bfs.onboard.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class MailService {
         if (accept) {
             body += "Congratulations. You're onboarding application has been accepted.";
         } else {
-            body += "Your onboarding application was not accepted for the following reason:";
+            body += "Your onboarding application was not accepted due the following reason(s):";
             for (String reason : rejectReason) {
                 body += reason + "\n";
             }
@@ -70,4 +71,43 @@ public class MailService {
 //            return "";
 //        }
     }
+
+    public boolean hiringApprove(Employee employee) {
+        Person person = employee.getPerson();
+        User user = person.getUser();
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(user.getEmail());
+        msg.setSubject("Beaconfire onboarding notification");
+        String body = "Hi " + person.getFirstName() + ",\n\n" +
+            "Congratulations. You're onboarding application has been accepted.";
+        msg.setText(body);
+        try {
+            javaMailSender.send(msg);
+            return true;
+        } catch(org.springframework.mail.MailException e) {
+            return false;
+        }
+    }
+
+    public boolean hiringReject(Employee employee, List<String> rejectReasons) {
+        Person person = employee.getPerson();
+        User user = person.getUser();
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(user.getEmail());
+        msg.setSubject("Beaconfire onboarding notification");
+        StringBuilder body = new StringBuilder("Hi " + person.getFirstName() + ",\n\n" +
+                "Congratulations. You're onboarding application has been accepted.");
+        body.append("Your onboarding application was not accepted due the following reason(s):");
+        for (String reason : rejectReasons) {
+            body.append(reason).append("\n");
+        }
+        msg.setText(body.toString());
+        try {
+            javaMailSender.send(msg);
+            return true;
+        } catch(org.springframework.mail.MailException e) {
+            return false;
+        }
+    }
+
 }

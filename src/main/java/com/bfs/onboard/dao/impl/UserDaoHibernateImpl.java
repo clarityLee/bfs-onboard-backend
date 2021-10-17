@@ -2,6 +2,8 @@ package com.bfs.onboard.dao.impl;
 
 import com.bfs.onboard.dao.UserDao;
 import com.bfs.onboard.domain.User;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -24,10 +26,20 @@ public class UserDaoHibernateImpl extends BasicTemplate implements UserDao {
     }
 
     @Override
+    public User fetchDetail(Integer userId) {
+        Session session = sessionFactory.getCurrentSession();
+        User user = findById(userId, User.class);
+        Hibernate.initialize(user.getPerson());
+        Hibernate.initialize(user.getPerson().getAddresses());
+        Hibernate.initialize(user.getPerson().getEmployee());
+        Hibernate.initialize(user.getPerson().getEmployee().getVisaStatus());
+        Hibernate.initialize(user.getPerson().getEmployee().getApplicationWorkFlow());
+        return user;
+    }
+
+    @Override
     public User findByPersonId(Integer personId) {
         List<User> res = getByField("personId", personId, User.class);
         return res.size() == 1 ? res.get(0) : new User();
     }
-
-
 }

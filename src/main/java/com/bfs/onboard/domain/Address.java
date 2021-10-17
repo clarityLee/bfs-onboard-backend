@@ -1,5 +1,7 @@
 package com.bfs.onboard.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,7 +38,9 @@ public class Address {
     @Column(name = "stateabbr")
     private String stateAbbr;
 
-    @Column(name = "personid")
-    private Integer personID;
+    @ManyToOne
+    @JoinColumn(name = "personid")
+    @JsonIgnore
+    private Person person;
 
 }

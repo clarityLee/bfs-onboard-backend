@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 public class OnBoardingController {
 
     private OnBoardingService onBoardingService;
@@ -25,8 +24,8 @@ public class OnBoardingController {
     }
 
     @PostMapping("/on-boarding")
-    public ResponseEntity<List<String>> onBoardingSubmit(HttpServletRequest httpServletRequest,
-                                                   @RequestBody final OnBoardingDto form) {
+    public ResponseEntity<List<String>> onBoardingSubmit(
+            @RequestBody final OnBoardingDto form) {
         List<String> errs = form.errMessages();
 
         if (!errs.isEmpty())

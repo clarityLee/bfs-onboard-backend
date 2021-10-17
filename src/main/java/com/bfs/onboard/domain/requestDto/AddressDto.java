@@ -1,6 +1,7 @@
 package com.bfs.onboard.domain.requestDto;
 
 import com.bfs.onboard.domain.Address;
+import com.bfs.onboard.domain.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class AddressDto {
 
+    private Integer addressId;
     private String addressLine1;
     private String addressLine2;
     private String city;
@@ -19,9 +21,9 @@ public class AddressDto {
     private String stateName;
     private String stateAbbr;
 
-    public Address toAddress(Integer personId) {
+    public Address toAddress(Person person) {
         Address a = new Address();
-        a.setPersonID(personId);
+        a.setPerson(person);
         a.setAddressLine1(addressLine1);
         a.setAddressLine2(addressLine2);
         a.setCity(city);

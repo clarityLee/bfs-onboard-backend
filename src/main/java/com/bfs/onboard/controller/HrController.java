@@ -1,8 +1,6 @@
 package com.bfs.onboard.controller;
 
-import com.bfs.onboard.constant.AppWorkStatus;
 import com.bfs.onboard.constant.Constant;
-import com.bfs.onboard.domain.PersonalDocument;
 import com.bfs.onboard.domain.response.OnboardingAppDto;
 import com.bfs.onboard.security.util.JwtUtil;
 import com.bfs.onboard.service.DocumentService;
@@ -17,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/hr")
 public class HrController {
 
@@ -54,28 +51,68 @@ public class HrController {
     }
 
     // --- hiring ---
+
+    /**
+     * Returns the list for Application Review
+     * @return
+     */
     @GetMapping("/onboardingAppList")
     public ResponseEntity<List<OnboardingAppDto>> onboardingApps() {
         return new ResponseEntity<>(onBoardingService.getAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/comment/docs/{id}")
+    /**
+     * Save a comment to a personal document in the Details window of a user
+     * @param personalDocumentId
+     * @param comment
+     * @return
+     */
+    @PostMapping("/comment/docs")
     public ResponseEntity<Void> commentPersonalDocs(
-            @PathVariable(name = "id") Integer personalDocumentId,
+            @RequestParam Integer personalDocumentId,
             @RequestParam String comment) {
 
         documentService.saveComment(personalDocumentId, comment);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/onboarding-decision")
-    public ResponseEntity<Void> onboardingDecision(
+    /**
+     * Save a Application level comment into applicationWorkFlow
+     * @param applicationWorkFlowId
+     * @param comment
+     * @return
+     */
+    @PostMapping("/comment/application")
+    public ResponseEntity<Void> commentApplication(
             @RequestParam Integer applicationWorkFlowId,
-            @RequestParam Boolean accept,
-            @RequestParam List<String> rejectReason) {
-
-
-        onBoardingService.hrDecision(applicationWorkFlowId, accept, rejectReason);
+            @RequestParam String comment) {
+        onBoardingService.saveComment(applicationWorkFlowId, comment);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Approve a hiring application
+     * @param applicationWorkFlowId
+     * @return
+     */
+    @PostMapping("/hiring/approve")
+    public ResponseEntity<Void> hiringApprove(
+            @RequestParam Integer applicationWorkFlowId) {
+        return new ResponseEntity<>(onBoardingService.hiringApprove(applicationWorkFlowId) ?
+                HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Reject a hiring application
+     * @param applicationWorkFlowId
+     * @param rejectReason
+     * @return
+     */
+    @PostMapping("/hiring/reject")
+    public ResponseEntity<Void> hiringReject(
+            @RequestParam Integer applicationWorkFlowId,
+            @RequestParam List<String> rejectReason) {
+        return new ResponseEntity<>(onBoardingService.hiringReject(applicationWorkFlowId, rejectReason) ?
+                HttpStatus.OK : HttpStatus.BAD_REQUEST);
     }
 }

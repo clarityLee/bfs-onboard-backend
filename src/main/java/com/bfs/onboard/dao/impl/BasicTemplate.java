@@ -51,6 +51,19 @@ public class BasicTemplate {
         return session.createQuery(cq).getResultList();
     }
 
+    <T, K> List<T> findByFieldAndFetch(String attrName, K attr, String fetchAttrName, Class<T> c) {
+        Session session = sessionFactory.getCurrentSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<T> cq = builder.createQuery(c);
+        Root<T> root = cq.from(c);
+        if (!fetchAttrName.isEmpty())
+            root.fetch(fetchAttrName, JoinType.LEFT);
+        cq.select(root).where(builder.equal(root.get(attrName), attr));
+        return session.createQuery(cq).getResultList();
+    }
+
+
+
     <T, K> List<T> getByField(String attrName, K attr, Class<T> c) {
         Session session = sessionFactory.getCurrentSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
