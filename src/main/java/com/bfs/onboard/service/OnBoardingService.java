@@ -63,7 +63,7 @@ public class OnBoardingService {
         p.setMiddleName(f.getMiddleName());
         p.setPreferredName(f.getPreferredName());
         p.setEmail(f.getEmail());
-        p.setCellPhone(f.getCeilPhone());
+        p.setCellPhone(f.getCellPhone());
         // TODO: check alternatePhone = workPhone ?
         p.setAlternatePhone(f.getWorkPhone());
         p.setGender(f.getGender());
@@ -103,8 +103,6 @@ public class OnBoardingService {
             pd.setCreatedBy(user.getId());
             template.save(pd);
         }
-        template.save(e);
-
         String workAuthorization = f.getWorkAuthorization();
         if (StringUtils.hasLength(workAuthorization)) {
             VisaStatus v = new VisaStatus();
@@ -114,13 +112,19 @@ public class OnBoardingService {
             v.setModificationDate(LocalDateTime.now());
             template.save(v);
 
+            e.setVisaStartDate(f.getVisaStartDate());
+            e.setVisaEndDate(f.getVisaEndDate());
+            e.setVisaStatus(v);
+        }
+        template.save(e);
+
+        if (StringUtils.hasLength(workAuthorization)) {
             PersonalDocument pd = new PersonalDocument();
             pd.setEmployeeID(e.getId());
             pd.setPath(f.getWorkAuthUploadPath());
             pd.setTitle(DocumentType.WORK_AUTHORIZATION);
             pd.setCreatedDate(LocalDateTime.now());
             pd.setCreatedBy(user.getId());
-            template.save(v);
         }
 
         // save user's reference contact

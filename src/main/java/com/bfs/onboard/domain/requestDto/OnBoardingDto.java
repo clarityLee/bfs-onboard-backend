@@ -1,5 +1,6 @@
 package com.bfs.onboard.domain.requestDto;
 
+import com.bfs.onboard.constant.Gender;
 import com.bfs.onboard.constant.WorkAuth;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,7 +35,7 @@ public class OnBoardingDto {
     private AddressDto currentAddress;
 
     // * required
-    private String ceilPhone;
+    private String cellPhone;
 
     private String workPhone;
     private String car;
@@ -57,8 +58,8 @@ public class OnBoardingDto {
     // H1-B, L2, F1(CPT/OPT), H4, Other
     private String workAuthorization;
 
-    private LocalDate visastartdate;
-    private LocalDate visaenddate;
+    private LocalDate visaStartDate;
+    private LocalDate visaEndDate;
 
     // the path for uploaded work Authorization Document path
     private String workAuthUploadPath;
@@ -91,12 +92,16 @@ public class OnBoardingDto {
             e.add("firstName err");
         if (!StringUtils.hasLength(lastName))
             e.add("lastName err");
-        if (!StringUtils.hasLength(ceilPhone))
+        if (!StringUtils.hasLength(cellPhone))
             e.add("ceilPhone err");
         if (!StringUtils.hasLength(ssn))
             e.add("SSN err");
         if (!StringUtils.hasLength(gender))
             e.add("Gender err");
+        else {
+            if (!Gender.accept(gender))
+                e.add("Gender error. 'Male', 'Female', 'I don't want to answer'");
+        }
         if (resident == null)
             e.add("resident err");
         if (citizen == null)
