@@ -8,18 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DocumentService {
 
     private BasicTemplate template;
     private PersonalDocumentDao personalDocumentDao;
+    @Autowired
     @Qualifier("hibernateTemplate")
-    public void setTemplate(BasicTemplate template) {
-        this.template = template;
+    public void setTemplate(BasicTemplate basicTemplate) {
+        this.template = basicTemplate;
     }
     @Autowired
     public void setPersonalDocumentDao(PersonalDocumentDao personalDocumentDao) {

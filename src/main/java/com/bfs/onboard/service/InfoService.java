@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 @Service
+@Transactional
 public class InfoService {
 
     private BasicTemplate template;
@@ -48,7 +49,6 @@ public class InfoService {
         this.userDao = userDao;
     }
 
-    @Transactional
     public EmployeeResponse getEmployeeDetailsByEmployeeId(Integer employeeId) {
         Employee e = employeeDao.fetchDetail(employeeId);
         Person p = e.getPerson();
@@ -56,7 +56,6 @@ public class InfoService {
         return getEmployeeResponse(e, p, u);
     }
 
-    @Transactional
     public EmployeeResponse getEmployeeDetailsByUser(String username) {
         User u = userDao.findByName(username);
         u = userDao.fetchDetail(u.getId());
@@ -65,7 +64,6 @@ public class InfoService {
         return getEmployeeResponse(e, p, u);
     }
 
-    @Transactional
     public EmployeeResponse getEmployeeResponse(Employee e, Person p, User u) {
         List<Contact> contacts = contactDao.fetchListByOwner(p.getId());
         Iterator<Contact> it = contacts.iterator();
@@ -88,10 +86,10 @@ public class InfoService {
         h.setReference(ref);
         h.setEmergencyList(contacts);
         h.setPersonalDocuments(personalDocumentDao.getWorkDocsByEmployee(e.getId()));
+        h.setAddresses(p.getAddresses());
         return h;
     }
 
-    @Transactional
     public void editPerson(EditPersonDto editNameDto) {
         Person person = template.findById(editNameDto.getPersonId(), Person.class);
         person.setFirstName(editNameDto.getFirstName());
@@ -103,7 +101,6 @@ public class InfoService {
         template.save(person);
     }
 
-    @Transactional
     public void editEmployment(EditEmploymentDto e) {
         Employee employee = employeeDao.fetchDetail(e.getEmployeeId());
         employee.setTitle(e.getTitle());

@@ -40,6 +40,7 @@ public class VisaStatus {
     public VisaStatus removeMapping() {
         VisaStatus v = new VisaStatus();
         v.setId(id);
+        v.setVisaType(visaType);
         v.setActive(active);
         v.setModificationDate(modificationDate);
         v.setCreateUser(createUser);

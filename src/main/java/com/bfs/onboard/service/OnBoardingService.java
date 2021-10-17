@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Transactional
 public class OnBoardingService {
 
     private BasicTemplate template;
@@ -54,7 +55,6 @@ public class OnBoardingService {
         this.mailService = mailService;
     }
 
-    @Transactional
     public boolean save(OnBoardingDto f) {
         User user = userDao.findByName(f.getUsername());
         if (user.getId() == null)

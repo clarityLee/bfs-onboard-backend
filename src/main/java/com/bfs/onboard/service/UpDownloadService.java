@@ -1,6 +1,5 @@
 package com.bfs.onboard.service;
 
-import com.bfs.onboard.dao.UnclaimedFileDao;
 import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.UnclaimedFile;
 import com.bfs.onboard.response.UploadResponse;
@@ -15,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@Transactional
 public class UpDownloadService {
 
     private BasicTemplate template;
@@ -32,7 +32,6 @@ public class UpDownloadService {
         this.fileStoreService = fileStoreService;
     }
 
-    @Transactional
     public UploadResponse uploadUnclaimed(String bucketName, MultipartFile file) {
 
         UploadResponse response = upload(bucketName, file);
