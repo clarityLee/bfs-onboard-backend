@@ -1,6 +1,5 @@
 package com.bfs.onboard.mail;
 
-import com.bfs.onboard.dao.RegistrationTokenDao;
 import com.bfs.onboard.domain.Employee;
 import com.bfs.onboard.domain.Person;
 import com.bfs.onboard.domain.User;
@@ -63,13 +62,6 @@ public class MailService {
                 body += reason + "\n";
             }
         }
-//        msg.setText(body);
-//        try {
-//            javaMailSender.send(msg);
-//            return link;
-//        } catch(org.springframework.mail.MailException e) {
-//            return "";
-//        }
     }
 
     public boolean hiringApprove(Employee employee) {
@@ -95,9 +87,8 @@ public class MailService {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(user.getEmail());
         msg.setSubject("Beaconfire onboarding notification");
-        StringBuilder body = new StringBuilder("Hi " + person.getFirstName() + ",\n\n" +
-                "Congratulations. You're onboarding application has been accepted.");
-        body.append("Your onboarding application was not accepted due the following reason(s):");
+        StringBuilder body = new StringBuilder("Hi " + person.getFirstName() + ",\n\n");
+        body.append("Your onboarding application was not accepted due the following reason(s):\n");
         for (String reason : rejectReasons) {
             body.append(reason).append("\n");
         }

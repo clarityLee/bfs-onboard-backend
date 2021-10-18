@@ -1,4 +1,4 @@
-package com.bfs.onboard.response;
+package com.bfs.onboard.domain.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

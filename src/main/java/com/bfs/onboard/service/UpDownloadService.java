@@ -2,7 +2,7 @@ package com.bfs.onboard.service;
 
 import com.bfs.onboard.dao.impl.BasicTemplate;
 import com.bfs.onboard.domain.UnclaimedFile;
-import com.bfs.onboard.response.UploadResponse;
+import com.bfs.onboard.domain.response.UploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
