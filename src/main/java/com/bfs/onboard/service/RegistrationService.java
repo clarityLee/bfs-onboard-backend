@@ -9,7 +9,7 @@ import com.bfs.onboard.domain.Role;
 import com.bfs.onboard.domain.User;
 import com.bfs.onboard.domain.UserRole;
 import com.bfs.onboard.mail.MailService;
-import com.bfs.onboard.response.RegistrationResponse;
+import com.bfs.onboard.domain.response.RegistrationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;

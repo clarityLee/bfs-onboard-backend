@@ -1,4 +1,4 @@
-package com.bfs.onboard.response;
+package com.bfs.onboard.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

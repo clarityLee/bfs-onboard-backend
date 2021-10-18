@@ -1,6 +1,6 @@
 package com.bfs.onboard.controller;
 
-import com.bfs.onboard.response.UploadResponse;
+import com.bfs.onboard.domain.response.UploadResponse;
 import com.bfs.onboard.service.FileStoreService;
 import com.bfs.onboard.service.UpDownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
