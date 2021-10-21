@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.IOUtils;
+import com.bfs.onboard.exception.MyS3FileNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,8 @@ public class FileStoreService {
             map.put("byteArray", byteArray);
             map.put("contentType", contentType);
             return map;
+        } catch (com.amazonaws.services.s3.model.AmazonS3Exception e) {
+            throw new MyS3FileNotFoundException();
         } catch (AmazonServiceException | IOException e) {
             throw new IllegalStateException("Failed to download the file", e);
         }

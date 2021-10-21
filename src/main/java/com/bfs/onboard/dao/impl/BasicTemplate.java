@@ -23,8 +23,9 @@ public class BasicTemplate {
         this.sessionFactory = sessionFactory;
     }
 
-    public <T> void save(T e) {
+    public <T> T save(T e) {
         sessionFactory.getCurrentSession().save(e);
+        return e;
     }
 
     public <T> void delete(T e) {
