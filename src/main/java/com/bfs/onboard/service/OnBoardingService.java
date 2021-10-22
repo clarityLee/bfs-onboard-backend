@@ -11,6 +11,7 @@ import com.bfs.onboard.domain.response.OnboardingAppDto;
 import com.bfs.onboard.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -176,7 +177,9 @@ public class OnBoardingService {
         return true;
     }
 
+    @Cacheable("onboardingList")
     public List<OnboardingAppDto> getAll() {
+        System.out.println("Invoking caching method");
         return onboardingDao.getAll();
     }
 
