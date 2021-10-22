@@ -70,7 +70,7 @@ public class BasicTemplate {
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> cq = builder.createQuery(c);
         Root<T> root = cq.from(c);
-        cq.select(root).where(builder.equal(root.get(attrName), attr));
+        cq.select(root).where(builder.equal(root.get(attrName), attr)).distinct(true);
         return session.createQuery(cq).getResultList();
     }
 

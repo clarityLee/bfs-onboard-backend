@@ -13,7 +13,7 @@ public class ExecutionTimeAspect {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Around("com.bfs.onboard.aop.PointCuts.inDaoLayer2()")
+    @Around("com.bfs.onboard.aop.PointCuts.requests()")
     public Object executionTimeAdvice(ProceedingJoinPoint pjp) throws Throwable {
         String signature = pjp.getSignature().toString();
         Object clazz = pjp.getSignature().getDeclaringType();
@@ -27,16 +27,4 @@ public class ExecutionTimeAspect {
         log.info("return value: "+result.toString());
         return result;
     }
-
-    @Before("com.bfs.onboard.aop.PointCuts.logRequest()")
-    public void beforeAdvice(JoinPoint joinPoint) {
-        log.info("Incoming request: " + joinPoint.getSignature());
-    }
-
-    @AfterReturning(value = "com.bfs.onboard.aop.PointCuts.inWebLayer()", returning = "res")
-    public void afterReturningAdvice(Object res){
-        log.info("Web Layer After Returning Advice ");
-        log.info("The return value is "+res.toString());
-    }
-
 }

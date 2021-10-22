@@ -12,6 +12,8 @@ import com.bfs.onboard.domain.requestDto.EditPersonDto;
 import com.bfs.onboard.domain.response.EmployeeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -49,12 +51,16 @@ public class InfoService {
         this.userDao = userDao;
     }
 
+    @Cacheable(value  = "employeeDetails", key = "#employeeId")
     public EmployeeResponse getEmployeeDetailsByEmployeeId(Integer employeeId) {
         Employee e = employeeDao.fetchDetail(employeeId);
         Person p = e.getPerson();
         User u = p.getUser();
         return getEmployeeResponse(e, p, u);
     }
+
+    @CacheEvict(value  = "employeeDetails", key = "#employeeId")
+    public void evictEmployee(Integer employeeId) {}
 
     public EmployeeResponse getEmployeeDetailsByUser(String username) {
         User u = userDao.findByName(username);

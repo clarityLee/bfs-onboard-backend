@@ -11,6 +11,7 @@ import com.bfs.onboard.domain.response.OnboardingAppDto;
 import com.bfs.onboard.mail.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +25,7 @@ public class OnBoardingService {
 
     private BasicTemplate template;
     private EmployeeDao employeeDao;
+    private InfoService infoService;
     private MailService mailService;
     private UnclaimedFileDao unclaimedFileDao;
     private OnboardingDao onboardingDao;
@@ -37,6 +39,10 @@ public class OnBoardingService {
     @Autowired
     public void setEmployeeDao(EmployeeDao employeeDao) {
         this.employeeDao = employeeDao;
+    }
+    @Autowired
+    public void setInfoService(InfoService infoService) {
+        this.infoService = infoService;
     }
     @Autowired
     public void setUnclaimedFileDao(UnclaimedFileDao unclaimedFileDao) {
@@ -185,6 +191,7 @@ public class OnBoardingService {
         a.setStatus(AppWorkStatus.STATUS_COMPLETED);
         template.save(a);
         Employee employee = employeeDao.fetchForEmail(a.getEmployee().getId());
+        infoService.evictEmployee(employee.getId());
         return mailService.hiringApprove(employee);
     }
 
@@ -193,6 +200,7 @@ public class OnBoardingService {
         a.setStatus(AppWorkStatus.STATUS_REJECTED);
         template.save(a);
         Employee employee = employeeDao.fetchForEmail(a.getEmployee().getId());
+        infoService.evictEmployee(employee.getId());
         return mailService.hiringReject(employee, rejectReasons);
     }
 
